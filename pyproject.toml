@@ -1,0 +1,19 @@
+[project]
+name = "langchain-bd"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "ernestng11",email = "ernestng11@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "langgraph-supervisor (>=0.0.27,<0.0.28)",
+    "langchain-openai (>=0.3.28,<0.4.0)",
+    "dotenv (>=0.9.9,<0.10.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

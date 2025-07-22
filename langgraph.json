@@ -1,0 +1,12 @@
+{
+  "dependencies": [
+    "."
+  ],
+  "graphs": {
+    "onchain_analysis": {
+      "path": "src.main_workflow:create_onchain_analysis_workflow",
+      "description": "Multi-agent workflow for blockchain revenue analysis and competitive intelligence"
+    }
+  },
+  "env": ".env"
+}
