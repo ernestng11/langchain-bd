@@ -1,6 +1,6 @@
 # Onchain Tools - Agent-Task-Tool Architecture
 
-A sophisticated multi-agent system built with LangGraph for blockchain revenue analysis and competitive intelligence using onchain data.
+A multi-agent system built with LangGraph for blockchain revenue analysis and competitive intelligence using onchain data.
 
 ## Overview
 
@@ -235,3 +235,39 @@ This project is proprietary to MantleX Research Team.
 ## Support
 
 For questions and support, contact the MantleX AI Research team.
+
+## Sample Strategic Synthesis Output
+
+```
+executive_summary='Strategic analysis of 2 blockchain ecosystems reveals Ethereum as the market leader with $6,500,000 in gas fees over 7d. \n\nDEFI emerges as the dominant category across chains, indicating strong institutional adoption and mature financial infrastructure. Contract-level analysis shows varying degrees of protocol concentration, with implications for ecosystem resilience and competitive positioning.\n\nKey strategic opportunities exist in underserved categories and emerging protocols, while concentration risks require careful portfolio diversification strategies.'
+
+competitive_landscape_analysis='Competitive landscape analysis:1. Ethereum: $6,500,000 total fees, defi dominance (45.2%), concentration ratio 81.1%2. Arbitrum: $6,500,000 total fees, defi dominance (52.1%), concentration ratio 86.0%Competitive insights:- Ethereum: DeFi specialist with strong financial infrastructur\n- Arbitrum: DeFi specialist with strong financial infrastructur\n'
+
+category_performance_insights='Category performance reveals ecosystem maturity and specialization patterns:\n\n- DEFI: Average 48.7% across chains (max 52.1%)\n- NFT: Average 20.9% across chains (max 23.1%)\n- CEFI: Average 14.0% across chains (max 15.2%)\n- SOCIAL: Average 7.9% across chains (max 8.5%)\n- UTILITY: Average 5.6% across chains (max 6.2%)\n- TOKEN_TRANSFERS: Average 2.3% across chains (max 3.1%)\n- CROSS_CHAIN: Average 0.5% across chains (max 0.8%)\n- UNLABELED: Average 0.2% across chains (max 0.3%)\n\nStrategic implications:\n- DEFI dominance suggests mature market with established protocols\n'
+
+contract_activity_insights='Contract activity analysis reveals protocol dominance and revenue patterns:\n\nProtocol concentration patterns:\n- High concentration (>75%): 4 category-blockchain combinations\n- Balanced distribution (≤60%): 0 category-blockchain combinations\n\nDominant protocols by category:\n- Contract_0 (arbitrum/defi): 43.8% market share\n- Contract_0 (arbitrum/nft): 43.8% market share\n- OpenSea (ethereum/nft): 42.8% market share\n- Uniswap V3 (ethereum/defi): 34.6% market share\n'
+
+revenue_growth_hypotheses=[
+    'Strong DeFi presence in ethereum, arbitrum indicates institutional adoption readiness and financial infrastructure maturity',
+    'High protocol concentration suggests winner-take-all dynamics in certain categories, creating moat opportunities for dominant players'
+]
+
+strategic_recommendations=[
+    'Consider ethereum for diversified market entry due to balanced ecosystem (81.1% concentration)',
+    'Target cross_chain category on arbitrum (0.2% current share) for first-mover advantage',
+    'Implement diversification strategies for exposure to ethereum, arbitrum due to high category concentration risk'
+]
+
+risk_assessment='Risk assessment identifies concentration and competitive threats:\nCategory concentration risks:\n- ethereum: 81.1% concentration in top 3 categories creates ecosystem vulnerability\n- arbitrum: 86.0% concentration in top 3 categories creates ecosystem vulnerability\n\nProtocol concentration risks:\n- ethereum/defi: 100.0% concentration in top contracts\n- ethereum/nft: 100.0% concentration in top contracts\n- arbitrum/defi: 100.0% concentration in top contracts\n- arbitrum/nft: 100.0% concentration in top contracts\n\nMitigation strategies:\n- Diversify across multiple blockchains and categories\n- Monitor protocol concentration trends for early warning signals\n- Maintain exposure to emerging protocols to capture growth opportunities\n'
+
+actionable_next_steps=[
+    'Implement continuous monitoring of gas fees and category distributions across analyzed blockchains',
+    'Deep-dive analysis of ethereum ecosystem protocols for partnership opportunities',
+    'Develop diversified portfolio allocation model based on category concentration analysis',
+    'Competitive analysis of dominant protocols: OpenSea, Contract_0, Uniswap V3'
+]
+
+cross_blockchain_comparison='Cross-blockchain comparative analysis:\n\nRevenue performance ranking:\n1. Ethereum: $6,500,000\n2. Arbitrum: $6,500,000\n\nEcosystem specializations:\n- Ethereum: defi specialist (45.2%)\n- Arbitrum: defi specialist (52.1%)\n\nRisk-return profiles:\n- Ethereum: High concentration, specialized ecosystem\n- Arbitrum: High concentration, specialized ecosystem\n'
+
+generated_at=datetime.datetime(2025, 7, 22, 17, 43, 6, 955410)
+```
