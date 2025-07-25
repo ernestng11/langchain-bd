@@ -25,10 +25,14 @@ class BlockchainCategoriesReport(BaseModel):
 class ContractInfo(BaseModel):
     """Individual contract information"""
     address: str
+    project_name: Optional[str] = None
     name: Optional[str] = None
-    gas_fees_usd: float
-    percentage_share: float
-    activity_type: Optional[str] = None
+    gas_fees_absolute_usd: float
+    main_category_key: str
+    sub_category_key: Optional[str] = None
+    gas_fees_absolute_eth: Optional[float] = None
+    txcount_absolute: Optional[int] = None
+    chain: Optional[str] = None
 
 
 class TopContractsByCategoryReport(BaseModel):

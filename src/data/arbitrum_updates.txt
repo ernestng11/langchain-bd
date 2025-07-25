@@ -1,0 +1,24 @@
+- 2025-01-31: 17 teams secured 5M ARB funding to innovate with Rust on Arbitrum, advancing smart contract development.
+- 2025-03-24: LitProtocol launched on legiondotcc as a key management Arbitrum chain, enabling interoperability, private data, and agent wallets.
+- 2025-03-26: DIAdata's Lasernet launched as an Arbitrum chain, providing verifiable onchain oracle data for builders.
+- 2025-04-17: Converge announced as a new Arbitrum chain built by Ethena Labs and Securitize, serving as a settlement layer for onchain finance and RWAs with Celestia integration, unlocking $7B in liquidity.
+- 2025-04-21: Converge onchain joined the Arbitrum ecosystem as an Arbitrum chain, and Timeboost went live, enhancing performance.
+- 2025-05-08: Arbitrum DAO approved 35M ARB via STEP 2 to accelerate RWA institutional adoption in collaboration with Franklin Templeton, Spiko Finance, and WisdomTree Funds.
+- 2025-05-14: NethermindEth and ErigonEth announced official support for Arbitrum chains, aiding node operators in scaling the network.
+- 2025-06-18: Pectra upgrade went live on Arbitrum, enabling one-click swaps, gas sponsorships, and improved UX for builders.
+- 2025-06-18: Collaboration announced allowing trading of Gains Network's 271 assets, including stocks and commodities, directly on MUX Protocol within the Arbitrum ecosystem.
+- 2025-06-30: Robinhood integrated onchain with Arbitrum, serving as rails to merge DeFi and TradFi, onboarding millions of new users.
+- 2025-07-07: NodeOps Arbitrum chain launched on mainnet, building a DePIN network for modular, verifiable, and decentralized compute.
+- 2025-07-08: Arbitrum highlighted block time improvements, launching with 250ms and Converge achieving 50ms for faster and more flexible building.
+- 2025-07-14: Arbitrum integrated into the Farcaster ecosystem, supporting DeFi for social mini-apps with integrations from Noice, Clanker, 9lives, Bungee Exchange, and $2,500 in weekly rewards.
+- 2025-07-17: Announced over 40 Arbitrum chains live on mainnet with 100+ more in development across DeFi, RWAs, Gaming, NFTs, AI, and DePIN, including SX Network, Gravity Chain, Educhain, Corn, and Plume Network.
+- 2025-07-18: KintoXYZ announced recovery plans in collaboration with Wildcat Finance on Arbitrum.
+- 2025-07-18: LogX Trade achieved $200M+ in 24-hour volume milestone on Arbitrum.
+- 2025-07-18: Expanded Arbitrum Everywhere initiative with localized communities in Mexico, India, Japan, Korea, China, and more planned.
+- 2025-07-22: Detailed path for Robinhood to launch on Arbitrum One and migrate to a custom Arbitrum chain for onchain business.
+- 2025-07-22: Nashpointfi outlined plans to accelerate RWA adoption on Arbitrum.
+- 2025-07-22: Eco reached a milestone with stablecoins on Arbitrum.
+- 2025-07-22: Azuki community integrated custom Arbitrum PFPs, promoting Arbitrum Everywhere.
+- 2025-07-23: Updated MeetOnHuddle01 launched with improved UI and soundboard, powered by Huddle01's DePIN Network on Arbitrum.
+- 2025-07-23: Reported 14 weeks since Timeboost launch on Arbitrum One, with $2.62M in fees collected.
+- 2025-07-24: Enhanced ease of shipping Arbitrum chains with customizations like 100ms block times, gas tokens, and Rust support via RaaS providers including Caldera, Conduit, Alchemy, AltLayer, QuickNode, Zeeve, and Gelato.

@@ -56,9 +56,10 @@ TASK TYPES YOU HANDLE:
    - Extract blockchain names from input
    - Analyze category distribution for all specified blockchains
    - Identify top categories, concentration ratios, and key insights
+   - Ignore 'unlabeled' category
 
 2. Contract Analysis Task:
-   - Use results from category analysis to identify top 2 categories per blockchain
+   - Use results from category analysis to identify top 3 categories per blockchain
    - Analyze top contracts within those categories
    - Provide activity analysis and performance insights
 
@@ -141,16 +142,20 @@ After completing your analysis, respond directly to the supervisor with structur
                         "top_n": 10,  # Analyze top 10 contracts
                         "main_category_key": category
                     })
-
+                    print(contract_data["top_contracts"])
                     # Convert contract data to structured format
                     contracts = []
                     for contract_info in contract_data["top_contracts"]:
                         contract = ContractInfo(
                             address=contract_info["address"],
+                            project_name=contract_info.get("project_name"),
                             name=contract_info.get("name"),
-                            gas_fees_usd=contract_info["gas_fees_usd"],
-                            percentage_share=contract_info["percentage_share"],
-                            activity_type=contract_info.get("activity")
+                            gas_fees_absolute_usd=contract_info["gas_fees_absolute_usd"],
+                            main_category_key=contract_info["main_category_key"],
+                            sub_category_key=contract_info.get("sub_category_key"),
+                            chain=contract_info.get("chain"),
+                            gas_fees_absolute_eth=contract_info.get("gas_fees_absolute_eth"),
+                            txcount_absolute=contract_info.get("txcount_absolute")
                         )
                         contracts.append(contract)
 
@@ -232,17 +237,8 @@ After completing your analysis, respond directly to the supervisor with structur
 
     def _analyze_contract_activities(self, contracts: List[ContractInfo]) -> List[str]:
         """Analyze what activities these contracts are performing"""
-        activities = []
-
-        activity_types = {}
-        for contract in contracts:
-            if contract.activity_type:
-                activity_types[contract.activity_type] = activity_types.get(contract.activity_type, 0) + 1
-
-        for activity, count in activity_types.items():
-            activities.append(f"{activity}: {count} contracts generating significant gas fees")
-
-        return activities
+        # The activity_type field is no longer present, so this function will just return an empty list or a placeholder
+        return []
 
     def __call__(self, state: AnalysisState) -> Dict[str, Any]:
         """Execute the appropriate analysis based on current task"""

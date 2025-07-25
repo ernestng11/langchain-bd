@@ -1,0 +1,47 @@
+- **2025-01-09**: Holocene upgrade goes live on Base Mainnet, improving the Fault Proof System and gas target configuration for better scaling and building a global onchain economy (posts found on X).
+
+- **2025-01-16**: Announcement of 2025 plans including delivering tools for builders, growing the app ecosystem, simplifying onchain identity, fostering global capital markets, and advancing decentralization, scaling, and acceleration (posts found on X).
+
+- **2025-01-16**: Bitcoin-backed loans powered by MorphoLabs and built on Base, highlighting the future of onchain finance (posts found on X).
+
+- **2025-01-17**: Release of mission, vision, and strategy for 2025, inviting collaboration to bring the world onchain (posts found on X).
+
+- **2025-01-22**: Update on ongoing activities including AI agents, building efforts, gasless transactions, smart wallets, and daily progress toward a global onchain economy (posts found on X).
+
+- **2025-02-07**: Increase in Base's gas target to support scaling, with a 2025 goal of 250 Mgas/s toward an ultimate target of 1 Gigagas/s (posts found on X).
+
+- **2025-02-27**: Introduction of Flashblocks for 10x faster performance, Appchains for app scaling, and Smart Wallet Sub Accounts for simpler onchain access (posts found on X).
+
+- **2025-02-27**: Coinbase One updates with onchain benefits including free gas on Base and perks from partners like DefinitiveFi, OpenCover, Uniswap, AerodromeFi, DIMO Network, MoonwellDeFi, MorphoLabs, PancakeSwap, sofamon, and Zora (posts found on X).
+
+- **2025-03-13**: Initiatives for more builder funding, access to support startups, and increased capital flow through onchain rails to build an open financial system (posts found on X).
+
+- **2025-04-29**: Achievement of Stage 1 Decentralization with permissionless fault proofs and decentralized contract upgrade process via a security council, advancing the goal of bringing everyone onchain (posts found on X).
+
+- **2025-05-07**: Pectra upgrade on Ethereum brings benefits to Base including smarter wallets for fewer clicks and smoother transactions, and 2x blob capacity for lower fees, going live on Base and the Optimism Superchain on May 9 (posts found on X).
+
+- **2025-05-09**: Base enhancements for faster, cheaper, and easier use with smarter wallets and 2x blob capacity, built on Ethereum and the Superchain (posts found on X).
+
+- **2025-06-18**: Launch of Commerce Payments Protocol built on Base in collaboration with Shopify to mainstream crypto payments (posts found on X).
+
+- **2025-06-25**: Addition of cbADA and cbLTC assets on Base for more access and assets (posts found on X).
+
+- **2025-07-16**: Announcements as part of "A New Day One" evolving Base beyond a chain, including various new features and integrations (posts found on X).
+
+- **2025-07-18**: Media coverage and quotes on the new baseapp for creators to join a free social network and get paid to post (posts found on X).
+
+- **2025-07-21**: Results from Base Batches Demo Day 001 awarding over $1 million to 40 teams, including top winner noicedotso and others in gaming, entertainment, finance, and more (posts found on X).
+
+- **2025-07-21**: Onchain Summer focus on gaming, vibe-coding, coining, and obsession with partners like RemixGG, tryoharaAI, Zora, and TYBXYZ (posts found on X).
+
+- **2025-07-22**: Integration of Base Pay by autonomous_labs, passing savings to customers instead of banks (posts found on X).
+
+- **2025-07-22**: Launch of baseapp summer for creating content and earning rewards weekly (posts found on X).
+
+- **2025-07-23**: Community engagement for coining photos from New Day One event in the baseapp (posts found on X).
+
+- **2025-07-23**: Podcast appearance discussing Base's history and origins as if Coinbase was built in the onchain era (posts found on X).
+
+- **2025-07-24**: Return of Murakami's 108 Flowers for Onchain Summer, available to mint in the baseapp (posts found on X).
+
+- **2025-07-24**: Announcement of Onchain Summer Awards with $200K prize pool, social features, and BaseCamp stage opportunities for innovative apps (posts found on X).

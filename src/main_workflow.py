@@ -39,7 +39,7 @@ class OnchainAnalysisWorkflow:
         # Initialize agents
         self.project_manager = ProjectManagerAgent(model_name)
         self.blockchain_revenue_agent = BlockchainRevenueAgent(model_name)
-        self.strategic_editor_agent = StrategicEditorAgent(model_name)
+        self.strategic_editor_agent = StrategicEditorAgent("gpt-4.1")
 
         # Build the workflow graph
         self.workflow = self._build_workflow()
@@ -359,7 +359,7 @@ if __name__ == "__main__":
 
     # Example input
     test_input = {
-        "blockchain_names": ["ethereum", "arbitrum"],
+        "blockchain_names": ["mantle", "base"],
         "timeframe": "7d",
         "metadata": {
             "analysis_type": "competitive_intelligence",

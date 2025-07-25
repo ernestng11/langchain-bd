@@ -1,0 +1,39 @@
+BlockchainCategoriesReport:
+  description: >
+    Report providing macro-level activity metrics for a blockchain, focused on category mix, economic activity, and concentration.
+  important_fields:
+    blockchain: "String; Chain identifier (e.g., Mantle, Base)."
+    timeframe: "String; Analysis window (e.g., '7d')."
+    top_category: "String; Leading activity category (e.g., DeFi, CeFi)."
+    top_category_share: "Float; % dominance of the top category."
+    category_breakdown: "Dict; Detailed % breakdown of all categories."
+    total_gas_fees_usd: "Float; Total gas fees in USD for the period."
+    category_concentration: "Float; % concentration in top categories."
+    key_insights: "List[String]; Precomputed summary points."
+    generated_at: "Datetime; Timestamp for data freshness."
+
+TopContractsByCategoryReport:
+  description: >
+    Report analyzing top contracts for a specific category on a blockchain, with protocol-level breakdown and concentration metrics.
+  important_fields:
+    blockchain: "String; Chain identifier."
+    category: "String; Category of contracts (e.g., DeFi, CeFi, unlabeled)."
+    timeframe: "String; Analysis window."
+    top_contracts:
+      description: "List of top contract objects for the given category."
+      fields:
+        - address: "String; Contract address."
+        - project_name: "String; Protocol or project name."
+        - name: "String; Contract role/identifier."
+        - gas_fees_absolute_usd: "Float; Gas fees in USD."
+        - main_category_key: "String; Main category."
+        - sub_category_key: "String; Sub-category."
+        - gas_fees_absolute_eth: "Float; Gas fees in ETH."
+        - txcount_absolute: "Int; Number of transactions."
+        - chain: "String; Chain identifier (redundant if at report level)."
+    total_contracts_analyzed: "Int; Number of contracts analyzed."
+    top_contract_share: "Float; % share of the top contract."
+    contract_concentration: "Float; % activity concentration among top contracts."
+    key_insights: "List[String]; Precomputed summary points."
+    activity_analysis: "Any; Additional context, if available."
+    generated_at: "Datetime; Timestamp for data freshness."

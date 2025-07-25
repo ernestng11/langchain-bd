@@ -9,6 +9,8 @@ import requests
 import time
 from datetime import datetime, timedelta
 import logging
+from .category_perc import get_categories_by_gas_fees_share, get_available_blockchains
+from .top_contracts_by_gas_fees import get_top_contracts_by_gas_fees, get_available_timeframes
 
 logger = logging.getLogger(__name__)
 
@@ -64,148 +66,122 @@ MOCK_CONTRACT_DATA = {
 }
 
 
-@tool
-def categories_by_gas_fees_tool(blockchain_name: str, timeframe: str) -> Dict[str, Any]:
+@tool("categories_by_gas_fees_tool")
+def categories_by_gas_fees_tool(blockchain_name: str, timeframe: str = "7d") -> dict:
     """
-    Analyzes category-level gas fees distribution for a specific blockchain.
-
-    Args:
-        blockchain_name: Name of the blockchain (ethereum, arbitrum, polygon, etc.)
-        timeframe: Analysis period (1d, 7d, 30d)
-
-    Returns:
-        Dictionary containing category distribution data and metadata
+    Gets categories by gas fees share data for specified blockchain networks from GrowThePie.
+    Returns a dict with summary and data or error.
     """
     try:
-        logger.info(f"Fetching category data for {blockchain_name} over {timeframe}")
-
-        # Simulate API call delay
-        time.sleep(0.5)
-
-        # Get mock data (replace with actual GrowThePie API call)
-        blockchain_lower = blockchain_name.lower()
-        if blockchain_lower not in MOCK_CATEGORY_DATA:
-            raise ValueError(f"Blockchain {blockchain_name} not supported")
-
-        category_data = MOCK_CATEGORY_DATA[blockchain_lower].copy()
-
-        # Calculate total gas fees (mock calculation)
-        base_fees = {
-            "1d": 1_000_000,
-            "7d": 6_500_000, 
-            "30d": 25_000_000
-        }
-        total_gas_fees = base_fees.get(timeframe, 1_000_000)
-
-        # Calculate concentration ratio (top 3 categories)
-        sorted_categories = sorted(category_data.items(), key=lambda x: x[1], reverse=True)
-        top_3_concentration = sum([pct for _, pct in sorted_categories[:3]])
-
-        result = {
+        json_path = "src/data/inspect_blockspace.json"
+        available_blockchains = get_available_blockchains(json_file_path=json_path)
+        if blockchain_name.lower() not in [bc.lower() for bc in available_blockchains]:
+            return {"error": f"Blockchain '{blockchain_name}' not supported.", "available_blockchains": available_blockchains}
+        valid_timeframes = ["1d", "7d", "30d"]
+        if timeframe not in valid_timeframes:
+            return {"error": f"Timeframe '{timeframe}' not supported.", "valid_timeframes": valid_timeframes}
+        df = get_categories_by_gas_fees_share(blockchain_name.lower(), timeframe, json_file_path=json_path)
+        categories = df.to_dict(orient="records")
+        # Compute summary fields
+        if not categories:
+            return {"error": "No category data found."}
+        # Sort by gas_fees_share_usd descending
+        sorted_cats = sorted(categories, key=lambda x: x.get("gas_fees_share_usd", 0), reverse=True)
+        top_category = sorted_cats[0]["category"]
+        top_category_share = sorted_cats[0]["gas_fees_share_usd"]
+        category_breakdown = {cat["category"]: cat["gas_fees_share_usd"] for cat in categories}
+        total_gas_fees_usd = sum(cat.get("gas_fees_usd_absolute", 0) for cat in categories)
+        category_concentration = sum(cat.get("gas_fees_share_usd", 0) for cat in sorted_cats[:3])
+        return {
             "blockchain": blockchain_name,
             "timeframe": timeframe,
-            "category_breakdown": category_data,
-            "total_gas_fees_usd": total_gas_fees,
-            "top_category": sorted_categories[0][0],
-            "top_category_share": sorted_categories[0][1],
-            "category_concentration": top_3_concentration,
-            "timestamp": datetime.now().isoformat(),
-            "data_source": "GrowThePie API (Mock)"
+            "top_category": top_category,
+            "top_category_share": top_category_share,
+            "category_breakdown": category_breakdown,
+            "total_gas_fees_usd": total_gas_fees_usd,
+            "category_concentration": category_concentration,
+            "categories": categories,
+            "columns": list(df.columns),
+            "error": None
         }
-
-        logger.info(f"Successfully fetched category data for {blockchain_name}")
-        return result
-
     except Exception as e:
-        logger.error(f"Error fetching category data for {blockchain_name}: {str(e)}")
-        raise
+        return {"error": str(e)}
 
-
-@tool
-def top_contracts_by_gas_fees_tool(
-    blockchain_name: str, 
-    timeframe: str, 
-    top_n: int, 
-    main_category_key: str
-) -> Dict[str, Any]:
+@tool("available_blockchains_tool")
+def available_blockchains_tool() -> dict:
     """
-    Analyzes top contracts by gas fees within a specific category and blockchain.
-
-    Args:
-        blockchain_name: Name of the blockchain
-        timeframe: Analysis period (1d, 7d, 30d)
-        top_n: Number of top contracts to return
-        main_category_key: Category to analyze (defi, nft, cefi, etc.)
-
-    Returns:
-        Dictionary containing top contracts data and analysis
+    Gets list of available blockchain networks in the GrowThePie dataset.
     """
     try:
-        logger.info(f"Fetching top contracts for {blockchain_name}/{main_category_key} over {timeframe}")
+        json_path = "src/data/inspect_blockspace.json"
+        blockchains = get_available_blockchains(json_file_path=json_path)
+        return {"blockchains": blockchains, "error": None}
+    except Exception as e:
+        return {"error": str(e)}
 
-        # Simulate API call delay
-        time.sleep(0.7)
-
-        # Get mock data (replace with actual Dune Analytics API call)
-        blockchain_lower = blockchain_name.lower()
-        category_key = (blockchain_lower, main_category_key)
-
-        if category_key not in MOCK_CONTRACT_DATA:
-            # Generate mock data for unsupported combinations
-            contracts_data = [
-                {
-                    "address": f"0x{i:04d}...mock",
-                    "name": f"Contract_{i}",
-                    "gas_fees_usd": 1_000_000 // (i + 1),
-                    "activity": "Generic Activity"
-                }
-                for i in range(min(top_n, 5))
-            ]
+@tool("top_contracts_by_gas_fees_tool")
+def top_contracts_by_gas_fees_tool(blockchain_name: str, timeframe: str = "7d", top_n: int = 10, main_category_key: str = None) -> dict:
+    """
+    Gets top contracts by gas fees for specified blockchain networks from GrowThePie.
+    Returns a dict with summary and data or error.
+    """
+    try:
+        json_path = "src/data/inspect_blockspace.json"
+        available_blockchains = get_available_blockchains(json_file_path=json_path)
+        if blockchain_name.lower() not in [bc.lower() for bc in available_blockchains]:
+            return {"error": f"Blockchain '{blockchain_name}' not supported.", "available_blockchains": available_blockchains}
+        available_timeframes = get_available_timeframes(blockchain_name.lower(), json_file_path=json_path)
+        if timeframe not in available_timeframes:
+            return {"error": f"Timeframe '{timeframe}' not supported for {blockchain_name}.", "available_timeframes": available_timeframes}
+        if top_n <= 0 or top_n > 100:
+            return {"error": f"top_n must be between 1 and 100. Received: {top_n}"}
+        df = get_top_contracts_by_gas_fees(blockchain_name.lower(), timeframe, top_n=top_n, main_category_key=main_category_key, json_file_path=json_path)
+        contracts = df.to_dict(orient="records")
+        if not contracts:
+            return {"error": f"No contracts found for {blockchain_name} ({timeframe}){f' and category {main_category_key}' if main_category_key else ''}"}
+        # Compute summary fields
+        total_contracts_analyzed = len(contracts)
+        total_gas_fees = sum(c.get("gas_fees_absolute_usd", 0) for c in contracts)
+        if total_contracts_analyzed > 0 and total_gas_fees > 0:
+            top_contract_share = (contracts[0]["gas_fees_absolute_usd"] / total_gas_fees) * 100
+            contract_concentration = sum(c["gas_fees_absolute_usd"] for c in contracts[:5]) / total_gas_fees * 100
         else:
-            contracts_data = MOCK_CONTRACT_DATA[category_key][:top_n]
-
-        # Calculate total fees and percentages
-        total_fees = sum(contract["gas_fees_usd"] for contract in contracts_data)
-
-        # Add percentage share to each contract
-        enhanced_contracts = []
-        for contract in contracts_data:
-            contract_copy = contract.copy()
-            contract_copy["percentage_share"] = (contract["gas_fees_usd"] / total_fees) * 100
-            enhanced_contracts.append(contract_copy)
-
-        # Calculate concentration metrics
-        top_contract_share = enhanced_contracts[0]["percentage_share"] if enhanced_contracts else 0
-        top_5_concentration = sum(
-            contract["percentage_share"] 
-            for contract in enhanced_contracts[:5]
-        )
-
-        result = {
+            top_contract_share = 0
+            contract_concentration = 0
+        return {
             "blockchain": blockchain_name,
-            "category": main_category_key,
             "timeframe": timeframe,
-            "top_contracts": enhanced_contracts,
-            "total_contracts_analyzed": len(enhanced_contracts),
-            "total_gas_fees_usd": total_fees,
+            "main_category_key": main_category_key,
+            "top_contracts": contracts,
+            "total_contracts_analyzed": total_contracts_analyzed,
             "top_contract_share": top_contract_share,
-            "contract_concentration": top_5_concentration,
-            "timestamp": datetime.now().isoformat(),
-            "data_source": "Dune Analytics API (Mock)"
+            "contract_concentration": contract_concentration,
+            "columns": list(df.columns),
+            "error": None
         }
-
-        logger.info(f"Successfully fetched top contracts for {blockchain_name}/{main_category_key}")
-        return result
-
     except Exception as e:
-        logger.error(f"Error fetching contract data: {str(e)}")
-        raise
+        return {"error": str(e)}
+
+@tool("available_timeframes_tool")
+def available_timeframes_tool(blockchain_name: str) -> dict:
+    """
+    Gets list of available timeframes for a specific blockchain network in the GrowThePie dataset.
+    """
+    try:
+        json_path = "src/data/inspect_blockspace.json"
+        available_blockchains = get_available_blockchains(json_file_path=json_path)
+        if blockchain_name.lower() not in [bc.lower() for bc in available_blockchains]:
+            return {"error": f"Blockchain '{blockchain_name}' not supported.", "available_blockchains": available_blockchains}
+        timeframes = get_available_timeframes(blockchain_name.lower(), json_file_path=json_path)
+        return {"blockchain": blockchain_name, "timeframes": timeframes, "error": None}
+    except Exception as e:
+        return {"error": str(e)}
 
 
 # Additional utility functions for the tools
 def validate_blockchain_name(blockchain_name: str) -> bool:
     """Validate if blockchain name is supported"""
-    supported_chains = ["ethereum", "arbitrum", "polygon", "optimism", "base", "avalanche"]
+    supported_chains = ['base', 'mantle', 'arbitrum', 'optimism']
     return blockchain_name.lower() in supported_chains
 
 

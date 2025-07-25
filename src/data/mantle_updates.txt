@@ -1,0 +1,21 @@
+- **2025-01-21**: Mantle announced its deepened commitment to shaping the future of global finance on-chain, focusing on building banking for the next generation and setting new transaction standards.
+- **2025-01-22**: Mantle introduced a new vision with three pillars of innovation, launching three new products: Enhanced Index Fund, Mantle Banking, and MantleX focused on AI advancements.
+- **2025-02-14**: Mantle joined Chainlink Scale, integrating Chainlink Data Feeds and Data Streams to enhance the DeFi ecosystem with secure, low-cost, real-time market data.
+- **2025-03-19**: EigenDA was fully activated on Mantle Network Mainnet, marking a partnership with EigenLayer to unlock scalability, censorship resistance, and security as the first and largest L2 to adopt it.
+- **2025-07-09**: Mantle announced a transformative quarter focused on leading in on-chain finance, introducing "Blockchain for Banking" with UR and Mantle Network to integrate crypto into everyday life.
+- **2025-07-18**: Mantle launched a new MNT utility page as a guide for holders, covering DeFi, governance, and rewards.
+- **2025-07-18**: Mantle announced MNT Rewards Booster S3 going live, enabling users to maximize rewards amid market activity.
+- **2025-07-18**: Mantle hosted and participated in EthCC events, including keynotes, demos, panels, and mixers, with highlights like the UR x Mantle mixer and collaborations with partners such as EigenLayer.
+- **2025-07-18**: New trading listing for $MNT went live on AscendEX, expanding access and liquidity.
+- **2025-07-21**: Mantle reported strong on-chain activity growth, including increases in DAU, daily transactions, and TVL.
+- **2025-07-21**: Mantle announced a community deep dive event hosting Redstone for education on blockchain oracles, with quizzes and rewards.
+- **2025-07-22**: Para went live on Mantle Network, integrating its wallet and auth suite for simplified onboarding and in-app UX for developers.
+- **2025-07-22**: Mantle highlighted TVL growth in top dApps like TreehouseFi, Agni, INIT Capital, Merchant Moe, and Ondo Finance.
+- **2025-07-22**: Möbius entered Beta Mainnet on Mantle, allowing liquidity provision, earning "Loops," and farming for future $MBS rewards.
+- **2025-07-22**: Mantle shared media insights on blurring lines between fiat and crypto via UR, powered by Mantle Network's infrastructure.
+- **2025-07-23**: Mantle confirmed full integration of EigenDA with Mantle Network, discussing performance, decentralization, and application scaling in a media post.
+- **2025-07-23**: Mantle highlighted its deep partnership with EigenCloud, shaping modular infrastructure and product evolution.
+- **2025-07-23**: Mantle hosted a deep dive on Redstone as modular oracles for DeFi and institutions.
+- **2025-07-23**: Mantle noted ecosystem growth tracking by SharpeLabs, driven by product rollouts, rewards, dev adoption, and infrastructure upgrades.
+- **2025-07-24**: Mantle announced sunsetting its official block explorer to focus on resource efficiency and support community explorers.
+- **2025-07-24**: Mantle kicked off Cookathon 03 workshops, uniting protocols for interoperability, UX education, and builder support on Mantle Network as the Blockchain for Banking.

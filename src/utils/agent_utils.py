@@ -140,7 +140,7 @@ def validate_state_inputs(state: AnalysisState) -> tuple[bool, list]:
         errors.append("timeframe must be one of: 1d, 7d, 30d")
 
     # Validate blockchain names
-    supported_blockchains = ["ethereum", "arbitrum", "polygon", "optimism", "base", "avalanche"]
+    supported_blockchains = ['base', 'mantle', 'arbitrum', 'optimism']
     if state.get("blockchain_names"):
         for blockchain in state["blockchain_names"]:
             if blockchain.lower() not in supported_blockchains:

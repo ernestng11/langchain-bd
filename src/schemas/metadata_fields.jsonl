@@ -1,0 +1,120 @@
+{
+    "analysis_metadata_fields": {
+      "BlockchainCategoriesReport": [
+        "blockchain",
+        "timeframe",
+        "top_category",
+        "top_category_share",
+        "category_breakdown",
+        "total_gas_fees_usd",
+        "category_concentration",
+        "key_insights",
+        "generated_at"
+      ],
+      "TopContractsByCategoryReport": [
+        "blockchain",
+        "category",
+        "timeframe",
+        "top_contracts",  // List of ContractInfo, see below
+        "total_contracts_analyzed",
+        "top_contract_share",
+        "contract_concentration",
+        "key_insights",
+        "activity_analysis",
+        "generated_at"
+      ],
+      "ContractInfo": [
+        "address",
+        "project_name",
+        "name",
+        "gas_fees_absolute_usd",
+        "main_category_key",
+        "sub_category_key",
+        "gas_fees_absolute_eth",
+        "txcount_absolute",
+        "chain"
+      ]
+    },
+    "analysis_functions_to_fields": {
+      "executive_summary": [
+        "blockchain",
+        "top_category",
+        "top_category_share",
+        "category_concentration",
+        "total_gas_fees_usd",
+        "contract_concentration",
+        "key_insights",
+        "top_contracts",
+        "top_contract_share"
+      ],
+      "competitive_landscape_analysis": [
+        "blockchain",
+        "top_category",
+        "top_category_share",
+        "category_breakdown",
+        "contract_concentration",
+        "top_contract_share",
+        "project_name",
+        "txcount_absolute"
+      ],
+      "category_performance_insights": [
+        "category_breakdown",
+        "top_category_share",
+        "category_concentration",
+        "total_gas_fees_usd",
+        "key_insights"
+      ],
+      "contract_activity_insights": [
+        "top_contracts",
+        "gas_fees_absolute_usd",
+        "txcount_absolute",
+        "project_name",
+        "top_contract_share",
+        "contract_concentration",
+        "activity_analysis"
+      ],
+      "revenue_growth_hypotheses": [
+        "total_gas_fees_usd",
+        "gas_fees_absolute_usd",
+        "txcount_absolute",
+        "top_category_share",
+        "category_concentration",
+        "contract_concentration"
+      ],
+      "strategic_recommendations": [
+        "key_insights",
+        "category_breakdown",
+        "contract_concentration",
+        "top_contract_share",
+        "project_name"
+      ],
+      "risk_assessment": [
+        "category_concentration",
+        "contract_concentration",
+        "top_contract_share",
+        "category_breakdown",
+        "txcount_absolute"
+      ],
+      "actionable_next_steps": [
+        "key_insights",
+        "category_breakdown",
+        "top_contracts",
+        "project_name",
+        "activity_analysis"
+      ],
+      "cross_blockchain_comparison": [
+        "blockchain",
+        "category_breakdown",
+        "top_category_share",
+        "contract_concentration",
+        "top_contract_share",
+        "total_gas_fees_usd"
+      ]
+    },
+    "notes": [
+      "Fields with 'top_contracts' refer to a list of ContractInfo objects; see ContractInfo fields.",
+      "Fields are optimized for structured extraction and analytics across multiple reporting functions.",
+      "This schema is intended to guide LLM-based code or data pipeline generation for automated insight extraction."
+    ]
+  }
+  

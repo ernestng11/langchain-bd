@@ -19,8 +19,8 @@ class StrategicEditorAgent:
     Synthesizes analysis reports into strategic insights and recommendations.
     """
 
-    def __init__(self, model_name: str = "gpt-4"):
-        self.model = ChatOpenAI(model=model_name, temperature=0.2)
+    def __init__(self, model_name: str = "gpt-4.1"):
+        self.model = ChatOpenAI(model="gpt-4.1", temperature=0.1)
         self.name = "strategic_editor_agent"
 
         # No tools needed - this agent only synthesizes existing data
@@ -84,21 +84,42 @@ You do not perform any technical analysis yourself - you synthesize existing rep
             contract_reports = state["contract_reports"]
 
             # Generate strategic synthesis
-            synthesis = StrategicSynthesisReport(
-                executive_summary=self._generate_executive_summary(category_reports, contract_reports),
-                competitive_landscape_analysis=self._analyze_competitive_landscape(category_reports, contract_reports),
-                category_performance_insights=self._analyze_category_performance(category_reports),
-                contract_activity_insights=self._analyze_contract_activities(contract_reports),
-                revenue_growth_hypotheses=self._generate_growth_hypotheses(category_reports, contract_reports),
-                strategic_recommendations=self._generate_strategic_recommendations(category_reports, contract_reports),
-                risk_assessment=self._assess_risks(category_reports, contract_reports),
-                actionable_next_steps=self._generate_next_steps(category_reports, contract_reports),
-                cross_blockchain_comparison=self._compare_blockchains(category_reports, contract_reports)
-            )
+            # synthesis = StrategicSynthesisReport(
+            #     executive_summary=self._generate_executive_summary(category_reports, contract_reports),
+            #     competitive_landscape_analysis=self._analyze_competitive_landscape(category_reports, contract_reports),
+            #     category_performance_insights=self._analyze_category_performance(category_reports),
+            #     contract_activity_insights=self._analyze_contract_activities(contract_reports),
+            #     revenue_growth_hypotheses=self._generate_growth_hypotheses(category_reports, contract_reports),
+            #     strategic_recommendations=self._generate_strategic_recommendations(category_reports, contract_reports),
+            #     risk_assessment=self._assess_risks(category_reports, contract_reports),
+            #     actionable_next_steps=self._generate_next_steps(category_reports, contract_reports),
+            #     cross_blockchain_comparison=self._compare_blockchains(category_reports, contract_reports)
+            # )
+
+
+            # Parse the category and contract reports into the system prompt and call the agent
+            system_prompt = self._get_system_prompt()
+            # import reports.yaml from the schemas folder and add it to the system prompt
+            import os
+            with open(os.path.join(os.path.dirname(__file__), "..", "schemas", "reports.yaml"), "r") as f:
+                reports_yaml = f.read()
+            system_prompt += f"\n\nReports schema: {reports_yaml}"
+            messages = [
+                SystemMessage(content=system_prompt),
+                HumanMessage(content=f"Category reports: {category_reports}"),
+                HumanMessage(content=f"Contract reports: {contract_reports}")
+            ]
+
+            response = self.agent.invoke({"messages": messages})
+            updated_state = state.copy()
+            updated_state["messages"] = response["messages"]
+
+            llm_content = response["messages"][-1].content.lower()
+            logger.info(f"Strategic Editor Agent: LLM Response: {llm_content}")
 
             # Update state
             updated_state = state.copy()
-            updated_state["strategic_synthesis"] = synthesis
+            updated_state["strategic_synthesis"] = llm_content
             updated_state["current_task"] = "synthesis_complete"
 
             logger.info("Strategic synthesis completed successfully")
