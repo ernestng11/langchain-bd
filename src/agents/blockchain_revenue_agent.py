@@ -8,7 +8,7 @@ from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_openai import ChatOpenAI
 from langgraph.prebuilt import create_react_agent
 from ..schemas.state import AnalysisState, BlockchainCategoriesReport, TopContractsByCategoryReport, ContractInfo
-from ..tools.blockchain_tools import categories_by_gas_fees_tool, top_contracts_by_gas_fees_tool, get_top_categories
+from ..tools.blockchain_tools import categories_by_gas_fees_tool, top_contracts_by_gas_fees_tool, get_latest_growthepie_datasets_tool, get_data_overview, get_combined_analysis, get_top_categories
 from datetime import datetime
 import logging
 
@@ -81,21 +81,40 @@ After completing your analysis, respond directly to the supervisor with structur
     def execute_category_analysis(self, state: AnalysisState) -> AnalysisState:
         """Execute category analysis for all blockchains"""
         try:
-            logger.info(f"Executing category analysis for blockchains: {state['blockchain_names']}")
+            blockchain_names = state['blockchain_names']
+            timeframe = state['timeframe']
+            
+            logger.info(f"💰 Starting Category Analysis")
+            logger.info("=" * 50)
+            logger.info(f"⛓️  Blockchains: {blockchain_names}")
+            logger.info(f"⏰ Timeframe: {timeframe}")
 
             category_reports = []
 
-            for blockchain in state['blockchain_names']:
+            for blockchain in blockchain_names:
+                # Use "7d" timeframe for blockchain analysis even when historical growthepie analysis is requested
+                analysis_timeframe = "7d" if timeframe in ["historical", "trend"] else timeframe
+                
+                logger.info(f"📊 Analyzing {blockchain} (using {analysis_timeframe} timeframe)...")
+                
                 # Fetch category data using the tool
                 category_data = categories_by_gas_fees_tool.invoke({
                     "blockchain_name": blockchain,
-                    "timeframe": state['timeframe']
+                    "timeframe": analysis_timeframe
                 })
+
+                # Check for errors in the response
+                if category_data.get("error"):
+                    error_msg = f"Error fetching data for {blockchain}: {category_data['error']}"
+                    logger.error(f"❌ {error_msg}")
+                    updated_state = state.copy()
+                    updated_state["errors"].append(f"Category Analysis: {error_msg}")
+                    return updated_state
 
                 # Create structured report
                 report = BlockchainCategoriesReport(
                     blockchain=blockchain,
-                    timeframe=state['timeframe'],
+                    timeframe=timeframe,
                     top_category=category_data["top_category"],
                     top_category_share=category_data["top_category_share"],
                     category_breakdown=category_data["category_breakdown"],
@@ -105,13 +124,15 @@ After completing your analysis, respond directly to the supervisor with structur
                 )
 
                 category_reports.append(report)
+                logger.info(f"✅ {blockchain} category analysis completed")
 
             # Update state
             updated_state = state.copy()
             updated_state["category_reports"] = category_reports
             updated_state["current_task"] = "category_analysis_complete"
 
-            logger.info(f"Category analysis completed for {len(category_reports)} blockchains")
+            logger.info(f"✅ Category analysis completed for {len(category_reports)} blockchains")
+            logger.info("=" * 50)
             return updated_state
 
         except Exception as e:
@@ -123,64 +144,151 @@ After completing your analysis, respond directly to the supervisor with structur
     def execute_contract_analysis(self, state: AnalysisState) -> AnalysisState:
         """Execute contract analysis for top categories in each blockchain"""
         try:
-            logger.info("Executing contract analysis for top categories")
+            logger.info(f"📄 Starting Contract Analysis")
+            logger.info("=" * 50)
 
-            if not state.get("category_reports"):
+            # Check if we have target categories from trend analysis
+            target_categories = state.get("target_categories")
+            
+            if not state.get("category_reports") and not target_categories:
                 raise ValueError("Category analysis must be completed before contract analysis")
 
             contract_reports = []
 
-            for category_report in state["category_reports"]:
-                # Get top 2 categories for this blockchain
-                top_categories = get_top_categories(category_report.category_breakdown, n=2)
+            # If we have target categories from trend analysis, use those
+            if target_categories:
+                logger.info(f"🎯 Using target categories from trend analysis: {target_categories}")
+                categories_to_analyze = target_categories
+                blockchain_names = state.get("blockchain_names", [])
+                
+                logger.info(f"📊 Analyzing contracts for {len(blockchain_names)} blockchains × {len(categories_to_analyze)} categories")
+                
+                for blockchain in blockchain_names:
+                    for category in categories_to_analyze:
+                        # Use "7d" timeframe for blockchain analysis even when historical growthepie analysis is requested
+                        analysis_timeframe = "7d" if state['timeframe'] in ["historical", "trend"] else state['timeframe']
+                        
+                        logger.info(f"🔍 Analyzing {category} contracts on {blockchain} (using {analysis_timeframe} timeframe)...")
+                        
+                        # Fetch contract data using the tool
+                        contract_data = top_contracts_by_gas_fees_tool.invoke({
+                            "blockchain_name": blockchain,
+                            "timeframe": analysis_timeframe,
+                            "top_n": 10,  # Analyze top 10 contracts
+                            "main_category_key": category
+                        })
+                        
+                        if contract_data.get("error"):
+                            error_msg = f"Error fetching contract data for {blockchain}/{category}: {contract_data['error']}"
+                            logger.error(f"❌ {error_msg}")
+                            updated_state = state.copy()
+                            updated_state["errors"].append(f"Contract Analysis: {error_msg}")
+                            return updated_state
+                        
+                        contracts_found = len(contract_data.get("top_contracts", []))
+                        logger.info(f"📋 Found {contracts_found} contracts for {category} on {blockchain}")
+                        # print(contract_data["top_contracts"])
+                        # Convert contract data to structured format
+                        contracts = []
+                        for contract_info in contract_data["top_contracts"]:
+                            contract = ContractInfo(
+                                address=contract_info["address"],
+                                project_name=contract_info.get("project_name"),
+                                name=contract_info.get("name"),
+                                gas_fees_absolute_usd=contract_info["gas_fees_absolute_usd"],
+                                main_category_key=contract_info["main_category_key"],
+                                sub_category_key=contract_info.get("sub_category_key"),
+                                chain=contract_info.get("chain"),
+                                gas_fees_absolute_eth=contract_info.get("gas_fees_absolute_eth"),
+                                txcount_absolute=contract_info.get("txcount_absolute")
+                            )
+                            contracts.append(contract)
 
-                for category in top_categories:
-                    # Fetch contract data using the tool
-                    contract_data = top_contracts_by_gas_fees_tool.invoke({
-                        "blockchain_name": category_report.blockchain,
-                        "timeframe": state['timeframe'],
-                        "top_n": 10,  # Analyze top 10 contracts
-                        "main_category_key": category
-                    })
-                    print(contract_data["top_contracts"])
-                    # Convert contract data to structured format
-                    contracts = []
-                    for contract_info in contract_data["top_contracts"]:
-                        contract = ContractInfo(
-                            address=contract_info["address"],
-                            project_name=contract_info.get("project_name"),
-                            name=contract_info.get("name"),
-                            gas_fees_absolute_usd=contract_info["gas_fees_absolute_usd"],
-                            main_category_key=contract_info["main_category_key"],
-                            sub_category_key=contract_info.get("sub_category_key"),
-                            chain=contract_info.get("chain"),
-                            gas_fees_absolute_eth=contract_info.get("gas_fees_absolute_eth"),
-                            txcount_absolute=contract_info.get("txcount_absolute")
+                        # Create structured report
+                        report = TopContractsByCategoryReport(
+                            blockchain=blockchain,
+                            category=category,
+                            timeframe=state['timeframe'],
+                            top_contracts=contracts,
+                            total_contracts_analyzed=contract_data["total_contracts_analyzed"],
+                            top_contract_share=contract_data["top_contract_share"],
+                            contract_concentration=contract_data["contract_concentration"],
+                            key_insights=self._generate_contract_insights(contract_data),
+                            activity_analysis=self._analyze_contract_activities(contracts)
                         )
-                        contracts.append(contract)
 
-                    # Create structured report
-                    report = TopContractsByCategoryReport(
-                        blockchain=category_report.blockchain,
-                        category=category,
-                        timeframe=state['timeframe'],
-                        top_contracts=contracts,
-                        total_contracts_analyzed=contract_data["total_contracts_analyzed"],
-                        top_contract_share=contract_data["top_contract_share"],
-                        contract_concentration=contract_data["contract_concentration"],
-                        key_insights=self._generate_contract_insights(contract_data),
-                        activity_analysis=self._analyze_contract_activities(contracts)
-                    )
+                        contract_reports.append(report)
+                        logger.info(f"✅ {category} contract analysis completed for {blockchain}")
+                
+                logger.info(f"✅ Contract analysis completed for {len(contract_reports)} category-blockchain combinations")
+                logger.info("=" * 50)
+                
+                # Update state
+                updated_state = state.copy()
+                updated_state["contract_reports"] = contract_reports
+                updated_state["current_task"] = "contract_analysis_complete"
+                return updated_state
+                
+            else:
+                # Use original logic with category reports
+                logger.info("📊 Using category reports to determine top categories...")
+                for category_report in state["category_reports"]:
+                    # Get top 2 categories for this blockchain
+                    top_categories = get_top_categories(category_report.category_breakdown, n=2)
+                    logger.info(f"🎯 Top categories for {category_report.blockchain}: {top_categories}")
 
-                    contract_reports.append(report)
+                    for category in top_categories:
+                        # Use "7d" timeframe for blockchain analysis even when historical growthepie analysis is requested
+                        analysis_timeframe = "7d" if state['timeframe'] in ["historical", "trend"] else state['timeframe']
+                        
+                        # Fetch contract data using the tool
+                        contract_data = top_contracts_by_gas_fees_tool.invoke({
+                            "blockchain_name": category_report.blockchain,
+                            "timeframe": analysis_timeframe,
+                            "top_n": 10,  # Analyze top 10 contracts
+                            "main_category_key": category
+                        })
+                        # print(contract_data["top_contracts"])
+                        # Convert contract data to structured format
+                        contracts = []
+                        for contract_info in contract_data["top_contracts"]:
+                            contract = ContractInfo(
+                                address=contract_info["address"],
+                                project_name=contract_info.get("project_name"),
+                                name=contract_info.get("name"),
+                                gas_fees_absolute_usd=contract_info["gas_fees_absolute_usd"],
+                                main_category_key=contract_info["main_category_key"],
+                                sub_category_key=contract_info.get("sub_category_key"),
+                                chain=contract_info.get("chain"),
+                                gas_fees_absolute_eth=contract_info.get("gas_fees_absolute_eth"),
+                                txcount_absolute=contract_info.get("txcount_absolute")
+                            )
+                            contracts.append(contract)
 
-            # Update state
-            updated_state = state.copy()
-            updated_state["contract_reports"] = contract_reports
-            updated_state["current_task"] = "contract_analysis_complete"
+                        # Create structured report
+                        report = TopContractsByCategoryReport(
+                            blockchain=category_report.blockchain,
+                            category=category,
+                            timeframe=state['timeframe'],
+                            top_contracts=contracts,
+                            total_contracts_analyzed=contract_data["total_contracts_analyzed"],
+                            top_contract_share=contract_data["top_contract_share"],
+                            contract_concentration=contract_data["contract_concentration"],
+                            key_insights=self._generate_contract_insights(contract_data),
+                            activity_analysis=self._analyze_contract_activities(contracts)
+                        )
 
-            logger.info(f"Contract analysis completed for {len(contract_reports)} category-blockchain combinations")
-            return updated_state
+                        contract_reports.append(report)
+                        logger.info(f"✅ {category} contract analysis completed for {category_report.blockchain}")
+
+                # Update state
+                updated_state = state.copy()
+                updated_state["contract_reports"] = contract_reports
+                updated_state["current_task"] = "contract_analysis_complete"
+
+                logger.info(f"✅ Contract analysis completed for {len(contract_reports)} category-blockchain combinations")
+                logger.info("=" * 50)
+                return updated_state
 
         except Exception as e:
             logger.error(f"Contract analysis error: {str(e)}")
@@ -273,7 +381,7 @@ Determine if you need to perform category analysis or contract analysis and exec
                 # Parse LLM response to set next task
                 
                 llm_content = response["messages"][-1].content.lower()
-                logger.info(f"Blockchain Revenue Agent: LLM Response: {llm_content}")
+                # logger.info(f"Blockchain Revenue Agent: LLM Response: {llm_content}")
                 if "category" in llm_content:
                     updated_state["current_task"] = "category_analysis"
                 elif "contract" in llm_content:

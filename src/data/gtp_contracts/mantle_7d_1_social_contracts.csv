@@ -1,0 +1,5 @@
+gas_fees_absolute_usd,main_category_key,chain,name,sub_category_key,txcount_absolute,project_name,gas_fees_absolute_eth,address
+2.99,social,mantle,Catizen,gaming,441,Catizen,0.001166,0xFDDE8C82F23000093d768146fA7Ef7aD9690aC71
+0.38,social,mantle,Onchaingm,community,128,OnChainGM,0.00015,0xB4d915FeB8b0757792435C8229D4d6AA6ab7e88d
+0.11,social,mantle,Onchaingm deploy,community,8,OnChainGM,4.4e-05,0xaC385b784232ff523Db8cFE5da150910dA2344d0
+0.01,social,mantle,Shares,community,2,Chat3,4e-06,0xAd3dbD09835CF15c543Bc59d31865D659b71060e

@@ -1,21 +1,26 @@
-[project]
+[tool.poetry]
 name = "langchain-bd"
 version = "0.1.0"
 description = ""
-authors = [
-    {name = "ernestng11",email = "ernestng11@gmail.com"}
-]
+authors = ["ernestng11 <ernestng11@gmail.com>"]
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = [
-    "langgraph-supervisor (>=0.0.27,<0.0.28)",
-    "langchain-openai (>=0.3.28,<0.4.0)",
-    "dotenv (>=0.9.9,<0.10.0)",
-    "pandas (>=2.3.1,<3.0.0)",
-    "xai-sdk (>=1.0.0,<2.0.0)"
-]
+packages = [{include = "src"}]
 
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+langgraph-supervisor = ">=0.0.27,<0.0.28"
+langchain-openai = ">=0.3.28,<0.4.0"
+python-dotenv = "^1.0.0"
+pandas = ">=2.3.1,<3.0.0"
+xai-sdk = ">=1.0.0,<2.0.0"
+langchain-experimental = "^0.3.4"
+tabulate = "^0.9.0"
+jupyter = "^1.1.1"
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.30.0"
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+

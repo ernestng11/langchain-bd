@@ -75,10 +75,92 @@ You manage agents with different specializations:
 
 Be systematic, thorough, and ensure all deliverables meet high standards."""
 
+    def analyze_trend_results(self, trend_analysis: Dict[str, Any]) -> Dict[str, Any]:
+        """Analyze trend results to identify categories with significant changes"""
+        try:
+            logger.info("🧠 Project Manager: Analyzing trend results for significant changes")
+            logger.info("=" * 50)
+            
+            combined_analysis = trend_analysis.get("combined_analysis", "")
+            chronological_order = trend_analysis.get("chronological_order", [])
+            
+            logger.info(f"📊 Analyzing combined analysis for trends...")
+            logger.info(f"⏰ Chronological order: {chronological_order}")
+            
+            # Use LLM to analyze the combined analysis and identify significant categories
+            analysis_prompt = f"""Analyze this historical blockchain data analysis and identify categories with significant changes:
+
+Chronological Order: {chronological_order}
+Combined Analysis: {combined_analysis}
+
+Identify categories that show:
+1. Significant growth or decline trends
+2. Major changes in market share
+
+Return ONLY a JSON list of category names (e.g., ["defi", "social"]) that show significant changes and warrant contract analysis.
+Focus on categories that have meaningful trends, not just noise."""
+
+            response = self.model.invoke(analysis_prompt)
+            
+            # Parse the response to extract category names
+            try:
+                import json
+                target_categories = json.loads(response.content.strip())
+                if not isinstance(target_categories, list):
+                    target_categories = ["defi"]  # Default fallback
+            except:
+                # Fallback parsing if JSON fails
+                content = response.content.lower()
+                target_categories = []
+                if "defi" in content:
+                    target_categories.append("defi")
+                if "social" in content:
+                    target_categories.append("social")
+                if "nft" in content:
+                    target_categories.append("nft")
+                if "cefi" in content:
+                    target_categories.append("cefi")
+                if not target_categories:
+                    target_categories = ["defi"]  # Default fallback
+
+            insights = {
+                "target_categories": target_categories,
+                "analysis_reasoning": response.content,
+                "chronological_order": chronological_order,
+                "combined_analysis": combined_analysis
+            }
+
+            logger.info(f"🎯 Identified target categories: {target_categories}")
+            logger.info(f"📝 Analysis reasoning: {response.content[:200]}...")
+            logger.info("=" * 50)
+            return insights
+
+        except Exception as e:
+            logger.error(f"Project Manager: Error analyzing trend results: {str(e)}")
+            return {
+                "target_categories": ["defi"],  # Default fallback
+                "analysis_reasoning": f"Error in analysis: {str(e)}",
+                "chronological_order": [],
+                "combined_analysis": ""
+            }
+
     def __call__(self, state: AnalysisState) -> Dict[str, Any]:
         """Execute the project manager logic"""
         try:
             logger.info("Project Manager: Starting workflow coordination")
+
+                        # Check if we need to analyze trend results
+            if state.get("growthepie_analysis") and not state.get("growthepie_insights"):
+                logger.info("Project Manager: Analyzing trend results for target categories")
+                trend_insights = self.analyze_trend_results(state["growthepie_analysis"])
+                
+                updated_state = state.copy()
+                updated_state["growthepie_insights"] = trend_insights
+                updated_state["target_categories"] = trend_insights["target_categories"]
+                updated_state["current_task"] = "trend_analysis_analyzed"
+                
+                logger.info("Project Manager: Trend analysis completed, ready for targeted contract analysis")
+                return updated_state
 
             # Prepare input for the agent
             messages = [

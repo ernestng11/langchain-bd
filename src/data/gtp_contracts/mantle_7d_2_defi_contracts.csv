@@ -1,0 +1,21 @@
+gas_fees_absolute_usd,main_category_key,chain,name,sub_category_key,txcount_absolute,project_name,gas_fees_absolute_eth,address
+4017.05,defi,mantle,Router,dex,401565,Agni Finance,1.115833,0x319B69888b0d11cEC22caA5034e25FfFBDc88421
+3828.62,defi,mantle,SwapRouter,dex,358794,FusionX,1.063152,0x5989FB161568b9F133eDf5Cf6787f5597762797F
+2890.36,defi,mantle,Router,dex,305348,Merchant Moe,0.80259,0xeaEE7EE68874218c3558b40063c42B82D3E7232a
+354.03,defi,mantle,LBRouter,lending,8135,LayerBank,0.097406,0x013e138EF6008ae5FDFDE29700e3f2Bc61d21E3a
+274.39,defi,mantle,Router,dex,3711,Odos,0.077424,0xD9F4e85489aDCD0bAF0Cd63b4231c6af58c26745
+166.65,defi,mantle,Money Market Hook,derivative,1958,INIT Capital,0.046548,0xf82CBcAB75C1138a8F1F20179613e7C0C8337346
+126.59,defi,mantle,HedgerParty Bot V1,derivative,2451,Symmio,0.035211,0x614bB1F3e0Ae5A393979468ED89088F05277312c
+96.38,defi,mantle,LB Router,dex,3301,Merchant Moe,0.02679,0xAFb85a12Babfafabfe1a518594492d5a830e782a
+83.17,defi,mantle,DexArbitragur,dex,4940,,0.023119,0x0411b46AB2d98C8ED3D53C4980943cA3669E1F42
+71.3,defi,mantle,Router,dex,753,OpenOcean,0.020446,0x6352a56caadC4F1E25CD6c75970Fa768A3304e64
+53.11,defi,mantle,MetaAggregationRouter v2,derivative,921,Synthetix,0.014775,0x6131B5fae19EA4f9D964eAc0408E4408b66337b5
+50.0,defi,mantle,DexArbitragur,dex,3141,,0.013905,0xc40C9b5ee6eB2548281e1cC40Baf1313435C5c6F
+48.39,defi,mantle,LendingPool,lending,1211,Lendle,0.013536,0xCFa5aE7c2CE8Fadc6426C1ff872cA45378Fb7cF3
+30.19,defi,mantle,Smart Router,dex,40,FusionX,0.008225,0x4bf659cA398A73AaF73818F0c64c838B9e229c08
+27.89,defi,mantle,Universal Router v2,dex,2590,Uniswap,0.007583,0x738fD6d10bCc05c230388B4027CAd37f82fe2AF2
+18.48,defi,mantle,StakingContract,lending,243,Lendle,0.005178,0x5C75A733656c3E42E44AFFf1aCa1913611F49230
+13.28,defi,mantle,StakeReward,staking,1230,Mantle,0.003708,0xeD884f0460A634C69dbb7def54858465808AACEf
+10.48,defi,mantle,ChefIncentivesController,lending,137,Lendle,0.00293,0x79e2fd1c484EB9EE45001A98Ce31F28918F27C41
+7.49,defi,mantle,MoeStaking,staking,574,Merchant Moe,0.002087,0xb3938E6ee233E7847a5F17bb843E9bD0Aa07e116
+6.91,defi,mantle,NFP Manager,derivative,52,N U R I,0.001876,0xAAA78E8C4241990B4ce159E105dA08129345946A

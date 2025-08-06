@@ -101,11 +101,11 @@ def get_available_timeframes(blockchain_name: str, json_file_path: str = "inspec
     except KeyError:
         return []
 
-# Example usage
-if __name__ == "__main__":
-    # Get available blockchains
-    print("Available blockchains:")
-    print(get_available_blockchains())
+# # Example usage
+# if __name__ == "__main__":
+#     # Get available blockchains
+#     print("Available blockchains:")
+#     print(get_available_blockchains())
     
-    top_contracts = get_top_contracts_by_gas_fees('base', '7d', top_n=20, main_category_key='cefi')
-    print(top_contracts) 
+#     top_contracts = get_top_contracts_by_gas_fees('base', '7d', top_n=20, main_category_key='cefi')
+#     print(top_contracts) 

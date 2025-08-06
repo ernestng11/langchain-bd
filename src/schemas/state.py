@@ -63,6 +63,16 @@ class StrategicSynthesisReport(BaseModel):
     generated_at: datetime = Field(default_factory=datetime.now)
 
 
+class GrowthepieAnalysisReport(BaseModel):
+    """Report structure for growthepie historical analysis"""
+    individual_analyses: List[str] = Field(description="Individual dataset analyses")
+    combined_analysis: str = Field(description="Synthesized comparative analysis")
+    dataset_info: List[Dict[str, Any]] = Field(description="Metadata for each dataset")
+    chronological_order: List[Dict[str, Any]] = Field(description="Chronological ordering of datasets")
+    success: bool = Field(description="Whether analysis completed successfully")
+    generated_at: datetime = Field(default_factory=datetime.now)
+
+
 class AnalysisState(TypedDict):
     """Main state structure for the multi-agent workflow"""
     # Input parameters
@@ -72,6 +82,9 @@ class AnalysisState(TypedDict):
     # Intermediate results
     category_reports: List[BlockchainCategoriesReport]
     contract_reports: List[TopContractsByCategoryReport]
+    growthepie_analysis: Optional[Dict[str, Any]]
+    target_categories: Optional[List[str]]  # Categories to focus on from growthepie analysis
+    growthepie_insights: Optional[Dict[str, Any]]  # Project Manager's analysis of growthepie results
 
     # Final output
     strategic_synthesis: Optional[StrategicSynthesisReport]

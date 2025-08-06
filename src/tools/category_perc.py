@@ -8,7 +8,6 @@ def get_categories_by_gas_fees_share(blockchain_name, timeframe, json_file_path=
         data = json.load(f)
     overview = data['data']['chains'][blockchain_name]['overview']
     types = overview['types']
-    print(types)
     categories = []
     for cat, val in overview[timeframe].items():
         if cat == 'types':
@@ -30,9 +29,9 @@ def get_available_blockchains(json_file_path: str = "inspect_blockspace.json") -
         data = json.load(f)
     return list(data['data']['chains'].keys())
 
-# Example usage:
-if __name__ == "__main__":
-    print(get_available_blockchains(json_file_path='growthepie/inspect_blockspace.json'))
+# # Example usage:
+# if __name__ == "__main__":
+#     print(get_available_blockchains(json_file_path='growthepie/inspect_blockspace.json'))
 
-    df = get_categories_by_gas_fees_share('base', '7d', json_file_path='growthepie/inspect_blockspace.json')
-    print(df)
+#     df = get_categories_by_gas_fees_share('base', '7d', json_file_path='growthepie/inspect_blockspace.json')
+#     print(df)

@@ -9,6 +9,14 @@ import requests
 import time
 from datetime import datetime, timedelta
 import logging
+import os
+import pandas as pd
+from pathlib import Path
+import re
+from langchain.agents.agent_types import AgentType
+from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe_agent
+from langchain_openai import ChatOpenAI
+from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from .category_perc import get_categories_by_gas_fees_share, get_available_blockchains
 from .top_contracts_by_gas_fees import get_top_contracts_by_gas_fees, get_available_timeframes
 
@@ -126,7 +134,7 @@ def top_contracts_by_gas_fees_tool(blockchain_name: str, timeframe: str = "7d", 
     Returns a dict with summary and data or error.
     """
     try:
-        json_path = "src/data/inspect_blockspace.json"
+        json_path = "src/data/new_inspect_blockspace.json"
         available_blockchains = get_available_blockchains(json_file_path=json_path)
         if blockchain_name.lower() not in [bc.lower() for bc in available_blockchains]:
             return {"error": f"Blockchain '{blockchain_name}' not supported.", "available_blockchains": available_blockchains}
@@ -176,6 +184,228 @@ def available_timeframes_tool(blockchain_name: str) -> dict:
         return {"blockchain": blockchain_name, "timeframes": timeframes, "error": None}
     except Exception as e:
         return {"error": str(e)}
+
+@tool("get_latest_growthepie_datasets_tool")
+def get_latest_growthepie_datasets_tool() -> dict:
+    """
+    Gets the 2 latest datasets from the growthepie_cache directory using LLM to determine dates.
+    Returns a dict with the loaded dataframes and metadata.
+    """
+    try:
+        cache_dir = Path("src/data/growthepie_cache")
+        
+        if not cache_dir.exists():
+            return {"error": f"Cache directory {cache_dir} does not exist."}
+        
+        # Get all CSV files using DirectoryLoader with TextLoader
+        loader = DirectoryLoader(str(cache_dir), glob="*.csv", loader_cls=TextLoader)
+        docs = loader.load()
+        
+        print(f"DEBUG: DirectoryLoader found {len(docs)} files")
+        for doc in docs:
+            print(f"DEBUG: File: {doc.metadata['source']}")
+        
+        if len(docs) < 2:
+            return {"error": f"Not enough CSV files found. Found {len(docs)}, need at least 2."}
+        
+        # Extract filenames and use LLM to determine latest dates
+        filenames = [doc.metadata["source"].split("/")[-1] for doc in docs]
+        print(f"DEBUG: Extracted filenames: {filenames}")
+        
+        # Use LLM to identify the 2 latest files by date with chronological info
+        llm = ChatOpenAI(temperature=0, model="gpt-4")
+        
+        date_analysis_prompt = f"""Analyze these CSV filenames and identify the 2 files with the latest dates:
+
+Filenames: {filenames}
+
+Extract the date information from each filename and return ONLY the 2 filenames with the most recent dates, in order from newest to oldest.
+
+IMPORTANT: Return exactly 2 filenames, no more, no less.
+
+Return format: filename1,filename2"""
+        
+        result = llm.invoke(date_analysis_prompt)
+        response = result.content.strip()
+        
+        # Clean and parse the response
+        latest_filenames = [f.strip() for f in response.split(",") if f.strip()]
+        
+        if len(latest_filenames) != 2:
+            return {"error": f"LLM returned {len(latest_filenames)} files, expected 2. Response: {response}"}
+        
+        # Determine chronological order (older first, newer second)
+        chronological_order = []
+        for i, filename in enumerate(latest_filenames):
+            filename = filename.strip()
+            # Extract date info from filename (e.g., "mantle_7d_1" -> older, "mantle_7d_2" -> newer)
+            if "_1" in filename:
+                chronological_order.append({"filename": filename, "order": "older", "position": i})
+            elif "_2" in filename:
+                chronological_order.append({"filename": filename, "order": "newer", "position": i})
+            else:
+                chronological_order.append({"filename": filename, "order": "unknown", "position": i})
+        
+        # Load the identified files
+        dataframes = []
+        dataframe_names = []
+        
+        for i, filename in enumerate(latest_filenames, 1):
+            file_path = cache_dir / filename.strip()
+            
+            if not file_path.exists():
+                return {"error": f"File {filename} not found"}
+            
+            try:
+                df = pd.read_csv(file_path)
+                dataframes.append(df)
+                dataframe_names.append(f"df{i}_{file_path.stem}")
+                
+                logger.info(f"Loaded dataset {i}: {file_path.stem} with {len(df)} rows")
+                
+            except Exception as e:
+                logger.error(f"Error reading file {file_path}: {e}")
+                return {"error": f"Failed to read file {file_path}: {str(e)}"}
+        
+        return {
+            "success": True,
+            "datasets_loaded": len(dataframes),
+            "dataset_names": dataframe_names,
+            "dataframes": dataframes,
+            "chronological_order": chronological_order,
+            "dataframe_info": [
+                {
+                    "name": name,
+                    "rows": len(df),
+                    "columns": list(df.columns),
+                    "filename": latest_filenames[i].strip(),
+                    "order": chronological_order[i]["order"]
+                }
+                for i, (name, df) in enumerate(zip(dataframe_names, dataframes))
+            ]
+        }
+        
+    except Exception as e:
+        logger.error(f"Error in get_latest_growthepie_datasets_tool: {e}")
+        return {"error": f"Failed to get latest datasets: {str(e)}"}
+
+
+@tool("get_data_overview")
+def get_data_overview(file_path: str, dataset_info: dict = None) -> dict:
+    """
+    Analyzes a single dataframe using LangChain's pandas dataframe agent.
+    Uses a fixed blockchain analysis prompt to provide insights.
+    
+    Args:
+        file_path: Path to the CSV file to analyze
+        dataset_info: Optional metadata about the dataset (filename, order, etc.)
+    """
+    try:
+        # Load the dataframe from file
+        dataframe = pd.read_csv(file_path)
+        
+        # Initialize the LLM for the agent
+        llm = ChatOpenAI(temperature=0, model="gpt-4")
+        
+        # Enhanced analysis prompt with chronological context
+        dataset_context = ""
+        if dataset_info:
+            dataset_context = f"\nThis dataset represents the {dataset_info.get('order', 'unknown')} time period (filename: {dataset_info.get('filename', 'unknown')})."
+        
+        fixed_analysis_prompt = f"""This dataframe is defined by the below columns.{dataset_context}
+
+1. **category**: This column indicates the category or type of transaction. Examples include "defi" (decentralized finance), "unlabeled" (transactions that haven't been categorized), "cefi" (centralized finance), "utility", and "token_transfers".
+
+2. **txcount_share**: This column represents the share or proportion of the total transaction count that each category accounts for. It is expressed as a decimal fraction of the total transactions.
+
+3. **gas_fees_share_eth**: This column represents the share or proportion of the total gas fees, measured in Ethereum (ETH), that each category accounts for. It is expressed as a decimal fraction of the total gas fees in ETH.
+
+4. **gas_fees_eth_absolute**: This column represents the absolute amount of gas fees, measured in Ethereum (ETH), that each category has incurred.
+
+5. **gas_fees_share_usd**: This column represents the share or proportion of the total gas fees, measured in USD, that each category accounts for. It is expressed as a percentage of the total gas fees in USD.
+
+6. **gas_fees_usd_absolute**: This column represents the absolute amount of gas fees, measured in USD, that each category has incurred.
+
+7. **txcount_absolute**: This column likely represents the absolute number of transactions that fall under each category.
+
+You are a blockchain data analyst expert in reading dataframes and crunching numbers.
+Your task is to answer my question about the data. Always give your answer backed by actual numbers in the dataframe.
+
+You MUST ignore the 'unlabeled' category.
+
+My task to you is:
+Give me a concise and factual report about each category and how they compare to each other."""
+        
+        # Create the agent with single dataframe
+        agent = create_pandas_dataframe_agent(
+            llm=llm,
+            df=dataframe,
+            verbose=True,
+            agent_type=AgentType.OPENAI_FUNCTIONS,
+            allow_dangerous_code=True,
+        )
+        
+        # Run the analysis
+        logger.info("Running analysis with fixed blockchain data analysis prompt")
+        result = agent.invoke(fixed_analysis_prompt)
+        
+        return {
+            "success": True,
+            "analysis_result": result.get('output', str(result)),
+            "dataset_info": dataset_info or {}
+        }
+        
+    except Exception as e:
+        logger.error(f"Error in get_data_overview: {e}")
+        return {"error": f"Failed to analyze dataset: {str(e)}"}
+
+
+@tool("get_combined_analysis")
+def get_combined_analysis(analysis_1: str, analysis_2: str, dataset_1_info: dict = None, dataset_2_info: dict = None) -> dict:
+    """
+    Combines two individual dataset analyses using LLM to provide comparative insights.
+    
+    Args:
+        analysis_1: Analysis result from first dataset
+        analysis_2: Analysis result from second dataset
+        dataset_1_info: Metadata about first dataset (order, filename)
+        dataset_2_info: Metadata about second dataset (order, filename)
+    """
+    try:
+        # Initialize the LLM
+        llm = ChatOpenAI(temperature=0, model="gpt-4")
+        
+        # Enhanced synthesis prompt with chronological context
+        order_1 = dataset_1_info.get('order', 'unknown') if dataset_1_info else 'unknown'
+        order_2 = dataset_2_info.get('order', 'unknown') if dataset_2_info else 'unknown'
+        filename_1 = dataset_1_info.get('filename', 'unknown') if dataset_1_info else 'unknown'
+        filename_2 = dataset_2_info.get('filename', 'unknown') if dataset_2_info else 'unknown'
+        
+        synthesis_prompt = f"""Below are two analyses of blockchain datasets in chronological order:
+
+{order_1.upper()} DATASET ({filename_1}):
+{analysis_1}
+
+{order_2.upper()} DATASET ({filename_2}):
+{analysis_2}
+
+Provide a comprehensive comparative analysis that:
+1. Identifies key differences between the two time periods
+2. Highlights trends and patterns over time
+
+Focus on meaningful changes in category performance, gas fees, and transaction patterns over the time period. Always remember to refer to the time period in your answer."""
+        
+        # Get combined analysis
+        result = llm.invoke(synthesis_prompt)
+        
+        return {
+            "success": True,
+            "combined_analysis": result.content
+        }
+        
+    except Exception as e:
+        logger.error(f"Error in get_combined_analysis: {e}")
+        return {"error": f"Failed to combine analyses: {str(e)}"}
 
 
 # Additional utility functions for the tools

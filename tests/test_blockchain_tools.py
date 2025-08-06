@@ -22,8 +22,8 @@ def test_top_contracts_by_gas_fees_tool():
     result = blockchain_tools.top_contracts_by_gas_fees_tool.invoke({
         "blockchain_name": "mantle",
         "timeframe": "7d",
-        "top_n": 5,
-        "main_category_key": "defi"
+        "top_n": 20,
+        "main_category_key": "social"
     })
     print("top_contracts_by_gas_fees_tool result:", result)
     assert isinstance(result, dict)

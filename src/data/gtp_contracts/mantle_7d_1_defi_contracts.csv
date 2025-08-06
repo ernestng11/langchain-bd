@@ -1,0 +1,21 @@
+gas_fees_absolute_usd,main_category_key,chain,name,sub_category_key,txcount_absolute,project_name,gas_fees_absolute_eth,address
+2687.47,defi,mantle,Router,dex,392848,Agni Finance,1.04947,0x319B69888b0d11cEC22caA5034e25FfFBDc88421
+2681.09,defi,mantle,SwapRouter,dex,368145,FusionX,1.046936,0x5989FB161568b9F133eDf5Cf6787f5597762797F
+1901.1,defi,mantle,Router,dex,294671,Merchant Moe,0.742367,0xeaEE7EE68874218c3558b40063c42B82D3E7232a
+238.16,defi,mantle,Router,dex,2466,Odos,0.092382,0xD9F4e85489aDCD0bAF0Cd63b4231c6af58c26745
+165.76,defi,mantle,Router,dex,1117,OpenOcean,0.064346,0x6352a56caadC4F1E25CD6c75970Fa768A3304e64
+86.08,defi,mantle,LBRouter,lending,3408,LayerBank,0.033476,0x013e138EF6008ae5FDFDE29700e3f2Bc61d21E3a
+41.63,defi,mantle,Money Market Hook,derivative,876,INIT Capital,0.016173,0xf82CBcAB75C1138a8F1F20179613e7C0C8337346
+40.69,defi,mantle,LB Router,dex,1188,Merchant Moe,0.015839,0xAFb85a12Babfafabfe1a518594492d5a830e782a
+25.89,defi,mantle,HedgerParty Bot V1,derivative,670,Symmio,0.010069,0x614bB1F3e0Ae5A393979468ED89088F05277312c
+19.14,defi,mantle,LendingPool,lending,673,Lendle,0.007484,0xCFa5aE7c2CE8Fadc6426C1ff872cA45378Fb7cF3
+13.18,defi,mantle,MetaAggregationRouter v2,derivative,352,Synthetix,0.005134,0x6131B5fae19EA4f9D964eAc0408E4408b66337b5
+11.78,defi,mantle,Universal Router v2,dex,1550,Uniswap,0.004586,0x738fD6d10bCc05c230388B4027CAd37f82fe2AF2
+11.07,defi,mantle,StakeReward,staking,1471,Mantle,0.004308,0xeD884f0460A634C69dbb7def54858465808AACEf
+7.2,defi,mantle,StakingContract,lending,133,Lendle,0.002819,0x5C75A733656c3E42E44AFFf1aCa1913611F49230
+5.72,defi,mantle,ChefIncentivesController,lending,102,Lendle,0.002235,0x79e2fd1c484EB9EE45001A98Ce31F28918F27C41
+3.41,defi,mantle,ClipperExchange,dex,290,Clipper (Shipyard Software & Admiral DAO),0.001326,0x7aC45a10FFf8eeBad8EB89b87B3A3AAa9480A2d9
+2.85,defi,mantle,RouterProxy,dex,172,Squid,0.001112,0xce16F69375520ab01377ce7B88f5BA8C48F8D666
+2.64,defi,mantle,MoeStaking,staking,253,Merchant Moe,0.001027,0xb3938E6ee233E7847a5F17bb843E9bD0Aa07e116
+1.51,defi,mantle,NFP Manager,derivative,29,N U R I,0.000586,0xAAA78E8C4241990B4ce159E105dA08129345946A
+1.3,defi,mantle,Staked Ether,staking,369,Mantle,0.000508,0xcDA86A272531e8640cD7F1a92c01839911B90bb0

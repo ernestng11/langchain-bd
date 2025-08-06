@@ -136,8 +136,8 @@ def validate_state_inputs(state: AnalysisState) -> tuple[bool, list]:
 
     if not state.get("timeframe"):
         errors.append("timeframe is required")
-    elif state["timeframe"] not in ["1d", "7d", "30d"]:
-        errors.append("timeframe must be one of: 1d, 7d, 30d")
+    elif state["timeframe"] not in ["1d", "7d", "30d", "historical", "trend"]:
+        errors.append("timeframe must be one of: 1d, 7d, 30d, historical, trend")
 
     # Validate blockchain names
     supported_blockchains = ['base', 'mantle', 'arbitrum', 'optimism']

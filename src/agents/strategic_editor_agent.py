@@ -50,14 +50,17 @@ STRATEGIC ANALYSIS FRAMEWORK:
 2. Competitive Landscape: Compare blockchain performance and positioning
 3. Category Performance: Identify ecosystem strengths and market opportunities  
 4. Contract Activity: Assess protocol dominance and revenue concentration risks
-5. Growth Hypotheses: Data-driven theories about ecosystem development
-6. Strategic Recommendations: Specific positioning and entry strategies
-7. Risk Assessment: Concentration risks and competitive threats
-8. Actionable Next Steps: Concrete business development actions
+5. Historical Trend Analysis: When available, analyze historical patterns and trends from GrowthePie datasets
+6. Contract Activity Hypotheses: Formulate hypotheses or provide reasoning for how contract-level activity influences category performance. Consider factors such as protocol dominance, user engagement, innovation, and the impact of leading contracts on overall category trends.
+7. Strategic Recommendations: Specific positioning and entry strategies
+8. Risk Assessment: Concentration risks and competitive threats
+9. Growth Hypotheses: Data-driven theories about ecosystem development
+10. Actionable Next Steps: Concrete business development actions
 
 SYNTHESIS METHODOLOGY:
 - Combine quantitative data with qualitative strategic insights
 - Identify patterns across multiple blockchains and categories
+- When historical data is available, analyze trends and patterns over time
 - Translate technical metrics into business implications
 - Provide specific, actionable recommendations
 - Highlight competitive advantages and vulnerabilities
@@ -77,11 +80,22 @@ You do not perform any technical analysis yourself - you synthesize existing rep
         try:
             logger.info("Executing strategic synthesis of analysis reports")
 
-            if not state.get("category_reports") or not state.get("contract_reports"):
+            # Check for required analyses
+            has_category_reports = bool(state.get("category_reports"))
+            has_contract_reports = bool(state.get("contract_reports"))
+            has_growthepie_analysis = bool(state.get("growthepie_analysis"))
+
+                        # For historical/trend analysis, we need trend analysis
+            if state.get("timeframe") in ["historical", "trend"] and not has_growthepie_analysis:
+                raise ValueError("Trend analysis must be completed for historical/trend analysis")
+
+            # For regular analysis, we need category and contract reports
+            if state.get("timeframe") not in ["historical", "trend"] and (not has_category_reports or not has_contract_reports):
                 raise ValueError("Both category and contract analysis must be completed before strategic synthesis")
 
-            category_reports = state["category_reports"]
-            contract_reports = state["contract_reports"]
+            category_reports = state.get("category_reports", [])
+            contract_reports = state.get("contract_reports", [])
+            growthepie_analysis = state.get("growthepie_analysis")
 
             # Generate strategic synthesis
             # synthesis = StrategicSynthesisReport(
@@ -97,25 +111,30 @@ You do not perform any technical analysis yourself - you synthesize existing rep
             # )
 
 
-            # Parse the category and contract reports into the system prompt and call the agent
+            # Parse the reports into the system prompt and call the agent
             system_prompt = self._get_system_prompt()
             # import reports.yaml from the schemas folder and add it to the system prompt
             import os
             with open(os.path.join(os.path.dirname(__file__), "..", "schemas", "reports.yaml"), "r") as f:
                 reports_yaml = f.read()
             system_prompt += f"\n\nReports schema: {reports_yaml}"
+            
             messages = [
                 SystemMessage(content=system_prompt),
                 HumanMessage(content=f"Category reports: {category_reports}"),
                 HumanMessage(content=f"Contract reports: {contract_reports}")
             ]
+            
+            # Add growthepie analysis if available
+            if growthepie_analysis:
+                messages.append(HumanMessage(content=f"Growthepie historical analysis: {growthepie_analysis}"))
 
             response = self.agent.invoke({"messages": messages})
             updated_state = state.copy()
             updated_state["messages"] = response["messages"]
 
             llm_content = response["messages"][-1].content.lower()
-            logger.info(f"Strategic Editor Agent: LLM Response: {llm_content}")
+            # logger.info(f"Strategic Editor Agent: LLM Response: {llm_content}")
 
             # Update state
             updated_state = state.copy()
