@@ -22,14 +22,25 @@ This project implements a **supervisor pattern** multi-agent system that analyze
 │ • Delegates     │    │ • Contract Analysis  │    │ • Recommendations   │
 │ • Validates     │    │ • Uses Tools         │    │ • Risk Assessment   │
 └─────────────────┘    └──────────────────────┘    └─────────────────────┘
+                                │
+                                ▼
+                       ┌──────────────────────┐
+                       │ Trend Analysis       │
+                       │ Agent                │
+                       ├──────────────────────┤
+                       │ • Historical Data    │
+                       │ • Trend Analysis     │
+                       │ • Pattern Recognition│
+                       └──────────────────────┘
 ```
 
 ### Data Flow
 
 1. **Input Processing**: User provides blockchain names and timeframe
-2. **Category Analysis**: Analyze gas fees distribution across categories (DeFi, NFT, etc.)
-3. **Contract Analysis**: Deep-dive into top 2 categories per blockchain
-4. **Strategic Synthesis**: Generate competitive intelligence and recommendations
+2. **Trend Analysis** (Historical): Analyze historical datasets for patterns and trends
+3. **Category Analysis**: Analyze gas fees distribution across categories (DeFi, NFT, etc.)
+4. **Contract Analysis**: Deep-dive into top categories per blockchain
+5. **Strategic Synthesis**: Generate competitive intelligence and recommendations
 
 ## Quick Start
 
@@ -59,13 +70,14 @@ workflow = create_onchain_analysis_workflow()
 # Execute analysis
 result = workflow.invoke({
     "blockchain_names": ["ethereum", "arbitrum", "polygon"],
-    "timeframe": "7d"
+    "timeframe": "7d"  # or "historical" for trend analysis
 })
 
 # Access results
 strategic_report = result["strategic_synthesis"]
 category_reports = result["category_reports"] 
 contract_reports = result["contract_reports"]
+trend_analysis = result.get("growthepie_analysis")  # Historical trend data
 ```
 
 ### Streaming Execution
@@ -84,6 +96,7 @@ onchain_tools_agent_system/
 │   ├── agents/                 # Agent implementations
 │   │   ├── project_manager.py        # Supervisor agent
 │   │   ├── blockchain_revenue_agent.py   # Data analysis agent  
+│   │   ├── growthepie_analysis_agent.py  # Trend analysis agent
 │   │   └── strategic_editor_agent.py     # Synthesis agent
 │   ├── tools/                  # Blockchain data tools
 │   │   └── blockchain_tools.py       # GrowThePie & Dune tools
@@ -113,9 +126,20 @@ onchain_tools_agent_system/
   - `top_contracts_by_gas_fees_tool`: Contract-level analysis
 - **Tasks**:
   - Category analysis for all blockchains
-  - Contract analysis for top 2 categories per blockchain
+  - Contract analysis for top categories per blockchain
 
-### 3. Strategic Editor Agent
+### 3. Trend Analysis Agent
+- **Role**: Senior Blockchain Data Analyst specializing in historical trends
+- **Tools**:
+  - `get_latest_growthepie_datasets_tool`: Historical dataset retrieval
+  - `get_data_overview`: Individual dataset analysis
+  - `get_combined_analysis`: Comparative trend analysis
+- **Tasks**:
+  - Analyze historical blockchain datasets
+  - Identify patterns and trends over time
+  - Provide chronological insights for strategic decisions
+
+### 4. Strategic Editor Agent
 - **Role**: Chief Strategy Officer for competitive intelligence
 - **Responsibilities**: Synthesizes analysis into strategic insights
 - **Outputs**: Comprehensive strategic synthesis report
@@ -136,6 +160,7 @@ onchain_tools_agent_system/
 - Executive summary and competitive landscape
 - Growth hypotheses and strategic recommendations
 - Risk assessment and actionable next steps
+- Historical trend analysis and pattern recognition
 
 ## Configuration
 
@@ -207,6 +232,7 @@ python -m src.main_workflow
 - Category-level gas fees data
 - Blockchain ecosystem metrics
 - Historical trend analysis
+- Cached dataset analysis for chronological insights
 
 ### Dune Analytics Integration  
 - Contract-level performance data
@@ -239,7 +265,7 @@ For questions and support, contact the MantleX AI Research team.
 ## Sample Strategic Synthesis Output
 
 ```
-executive_summary='Strategic analysis of 2 blockchain ecosystems reveals Ethereum as the market leader with $6,500,000 in gas fees over 7d. \n\nDEFI emerges as the dominant category across chains, indicating strong institutional adoption and mature financial infrastructure. Contract-level analysis shows varying degrees of protocol concentration, with implications for ecosystem resilience and competitive positioning.\n\nKey strategic opportunities exist in underserved categories and emerging protocols, while concentration risks require careful portfolio diversification strategies.'
+executive_summary='Strategic analysis of 2 blockchain ecosystems reveals Ethereum as the market leader with $6,500,000 in gas fees over 7d. \n\nDEFI emerges as the dominant category across chains, indicating strong institutional adoption and mature financial infrastructure. Contract-level analysis shows varying degrees of protocol concentration, with implications for ecosystem resilience and competitive positioning.\n\nHistorical trend analysis reveals significant shifts in category dominance, with emerging patterns in social and DeFi categories. Key strategic opportunities exist in underserved categories and emerging protocols, while concentration risks require careful portfolio diversification strategies.'
 
 competitive_landscape_analysis='Competitive landscape analysis:1. Ethereum: $6,500,000 total fees, defi dominance (45.2%), concentration ratio 81.1%2. Arbitrum: $6,500,000 total fees, defi dominance (52.1%), concentration ratio 86.0%Competitive insights:- Ethereum: DeFi specialist with strong financial infrastructur\n- Arbitrum: DeFi specialist with strong financial infrastructur\n'
 
