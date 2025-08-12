@@ -1,20 +1,42 @@
 # Onchain Tools - Agent-Task-Tool Architecture
 
-A sophisticated multi-agent intelligence system built with LangGraph that transforms raw blockchain data into actionable competitive intelligence. This enterprise-grade platform analyzes onchain revenue patterns, protocol performance, and ecosystem dynamics across multiple blockchains to deliver strategic insights for investment decisions, competitive positioning, and market opportunity identification.
+## What It Is
 
-## Key Capabilities
+A sophisticated multi-agent intelligence system that transforms raw blockchain data into strategic competitive insights. Built with LangGraph, it analyzes onchain metrics across multiple blockchains to identify revenue patterns, protocol dominance, and strategic opportunities in the blockchain ecosystem.
 
-**🔍 Multi-Dimensional Analysis**: Deep-dive into category-level gas fee distributions, contract performance metrics, and cross-blockchain competitive landscapes
+## Why It Works
 
-**📊 Historical Trend Intelligence**: Leverage cached historical datasets to identify emerging patterns, seasonal trends, and market evolution signals
+**Data-Driven Intelligence**: Unlike traditional market analysis that relies on external reports, this system directly analyzes onchain data from GrowThePie and Dune Analytics, providing real-time, unfiltered insights into blockchain activity.
 
-**🎯 Strategic Synthesis**: AI-powered competitive intelligence that transforms complex onchain data into executive-level strategic recommendations
+**Multi-Agent Specialization**: Each agent has specialized expertise - from historical trend analysis to strategic synthesis - ensuring comprehensive coverage of the blockchain landscape without human bias or oversight limitations.
 
-**⚡ Real-Time Execution**: Streaming workflow execution with live updates and comprehensive error handling for production environments
+**Competitive Advantage**: By identifying category concentration patterns, protocol dominance, and cross-blockchain opportunities, it reveals strategic insights that can inform investment decisions, partnership strategies, and ecosystem positioning.
 
-**🏗️ Enterprise Architecture**: Built on LangGraph with supervisor pattern multi-agent orchestration, ensuring reliability and scalability
+## How It Works
 
-Perfect for blockchain research teams, investment analysts, protocol developers, and competitive intelligence professionals who need to understand not just what's happening onchain, but why it matters strategically.
+**1. Data Ingestion & Processing**
+- Connects to GrowThePie API for category-level gas fee distributions
+- Integrates with Dune Analytics for contract-level performance data
+- Processes historical datasets for trend analysis and pattern recognition
+
+**2. Multi-Agent Analysis Pipeline**
+- **Trend Analysis Agent**: Analyzes historical blockchain datasets to identify patterns over time
+- **Blockchain Revenue Agent**: Examines current gas fee distributions across categories (DeFi, NFT, CeFi, etc.)
+- **Contract Analysis**: Deep-dives into top-performing contracts within dominant categories
+- **Strategic Editor**: Synthesizes all analysis into actionable competitive intelligence
+
+**3. Strategic Output Generation**
+- **Category Reports**: Reveals which blockchain ecosystems dominate specific categories
+- **Contract Reports**: Identifies protocol concentration and market share patterns
+- **Strategic Synthesis**: Provides executive summary, competitive landscape analysis, and actionable recommendations
+- **Risk Assessment**: Highlights concentration risks and mitigation strategies
+
+**4. Real-Time Execution**
+- Streams analysis updates as they're processed
+- Supports both historical trend analysis and current snapshot analysis
+- Configurable timeframes (7d, 14d, historical) for different strategic needs
+
+The system transforms complex blockchain data into clear strategic insights, enabling data-driven decision making in the rapidly evolving blockchain ecosystem.
 
 ## Overview
 
