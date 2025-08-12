@@ -1,6 +1,20 @@
 # Onchain Tools - Agent-Task-Tool Architecture
 
-A multi-agent system built with LangGraph for blockchain revenue analysis and competitive intelligence using onchain data.
+A sophisticated multi-agent intelligence system built with LangGraph that transforms raw blockchain data into actionable competitive intelligence. This enterprise-grade platform analyzes onchain revenue patterns, protocol performance, and ecosystem dynamics across multiple blockchains to deliver strategic insights for investment decisions, competitive positioning, and market opportunity identification.
+
+## Key Capabilities
+
+**🔍 Multi-Dimensional Analysis**: Deep-dive into category-level gas fee distributions, contract performance metrics, and cross-blockchain competitive landscapes
+
+**📊 Historical Trend Intelligence**: Leverage cached historical datasets to identify emerging patterns, seasonal trends, and market evolution signals
+
+**🎯 Strategic Synthesis**: AI-powered competitive intelligence that transforms complex onchain data into executive-level strategic recommendations
+
+**⚡ Real-Time Execution**: Streaming workflow execution with live updates and comprehensive error handling for production environments
+
+**🏗️ Enterprise Architecture**: Built on LangGraph with supervisor pattern multi-agent orchestration, ensuring reliability and scalability
+
+Perfect for blockchain research teams, investment analysts, protocol developers, and competitive intelligence professionals who need to understand not just what's happening onchain, but why it matters strategically.
 
 ## Overview
 
